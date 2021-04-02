@@ -8,6 +8,7 @@
         <div id="nav">
           <router-link to="/">Home</router-link>
           <router-link to="/about">About</router-link>
+          <router-link to="/table">Table</router-link>
         </div>
       </div>
       <div class="layaut__main">
@@ -31,8 +32,6 @@
 
 body {
   margin: 0;
-
-
 }
 
 .layout {
@@ -51,7 +50,7 @@ body {
 
     .layaut__side-bar {
       padding: 10px;
-      min-width: 300px;
+      min-width: 150px;
       background: #42b983;
       min-height: calc(100vh - 80px);
     }

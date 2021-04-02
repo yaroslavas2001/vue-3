@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-  <h1>Home</h1>
+  <h1>Table</h1>
     <h1>{{ name }}</h1>
     <h1> {{test}} </h1>
     <div class='element'>
@@ -21,13 +21,14 @@
 // пример таблицы https://mdbootstrap.com/docs/b4/jquery/tables/pagination/
 import { Options, Prop, Vue, Watch } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import * as faker from 'faker';
 
 @Options({
   components: {
     HelloWorld
   }, 
 })
-export default class Home extends Vue {
+export default class Table extends Vue {
   
   @Prop({type: String}) test!: string;
   created() {
@@ -35,7 +36,18 @@ export default class Home extends Vue {
   name = 'Иванов Иван Иванович';
   @Watch('name')
   onNameChanged() {
-    console.log("test");
+    // https://stackoverflow.com/questions/45278398/how-to-use-faker-js-in-typescript
+    //https://www.npmjs.com/package/faker
+    for (var i = 0; i < 50; i++) {
+      let firstName = faker.name.firstName();
+      console.log(firstName);
+      let birthday = faker.date.past();
+      console.log(birthday);
+      let age = Math.floor(Math.random() * 101);;
+      console.log(age);
+      let avatar = faker.image.avatar();
+      console.log(avatar);
+    }
   }
 }
 </script>
