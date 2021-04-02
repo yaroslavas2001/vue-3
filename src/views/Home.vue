@@ -1,13 +1,9 @@
 <template>
   <div class="home">
     <h1>{{ name }}</h1>
-      <h1>{{ name1 }}</h1>
-    <h1>
-    {{test}}
-    </h1>
+    <h1> {{test}} </h1>
     <div class='element'>
       <input v-model='name'/>
-       <input v-model='name1'/>
       <!--v-model  для обновления данных в элементах ввода-->
       <button>Ok</button>
     </div>
@@ -24,6 +20,7 @@
 // пример таблицы https://mdbootstrap.com/docs/b4/jquery/tables/pagination/
 import { Options, Prop, Vue, Watch } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import * as faker from 'faker';
 
 @Options({
   components: {
@@ -38,12 +35,8 @@ export default class Home extends Vue {
   name = 'Иванов Иван Иванович';
   @Watch('name')
   onNameChanged() {
-    console.log('Name changed: ', this.name);
-  }
-  name1 = '123456789';
-   @Watch('name1')
-  onName1Changed() {
-    console.log('Name changed: ', this.name1);
+    let city = faker.phone.phoneNumber();
+    console.log(city);
   }
 }
 </script>
