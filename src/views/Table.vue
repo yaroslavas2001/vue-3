@@ -2,11 +2,9 @@
   <div class="home">
   <h1>Table</h1>
     <h1>{{ name }}</h1>
-    <h1> {{test}} </h1>
     <div class='element'>
       <input v-model='name'/>
       <!--v-model  для обновления данных в элементах ввода-->
-      <button>Ok</button>
     </div>
   </div>
 </template>
@@ -29,8 +27,7 @@ import * as faker from 'faker';
   }, 
 })
 export default class Table extends Vue {
-  
-  @Prop({type: String}) test!: string;
+  // заполнить v-for
   created() {
   }
   name = 'Иванов Иван Иванович';
