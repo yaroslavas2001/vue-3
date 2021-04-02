@@ -6,6 +6,7 @@
     </h1>
     <div class='element'>
       <input v-model='name'/>
+      <!--v-model  для обновления данных в элементах ввода-->
       <button>Ok</button>
     </div>
   </div>
@@ -18,9 +19,10 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 @Options({
   components: {
     HelloWorld
-  },
+  }, 
 })
 export default class Home extends Vue {
+  
   @Prop({type: String}) test!: string;
   created() {
     
