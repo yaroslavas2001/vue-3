@@ -7,7 +7,8 @@
     <div class="cell_age">Возраст</div>
     <div class="cell_avatar">Фотография</div>
   </div>
-  <div class="row" v-if="UserViewModel">
+  <div class="row" >
+    <p>123</p>
       <div class="cell_name" v-for="item in UserViewModel" :key="item.name">{{item.name}}</div>
       <div class="cell_date" v-for="item in UserViewModel" :key="item.data">{{item.data}}</div>
       <div class="cell_age" v-for="item in UserViewModel" :key="item.age">{{item.age}}</div>
@@ -36,7 +37,8 @@ import * as faker from 'faker';
   }, 
 })
 export default class Table extends Vue {
-  // заполнить v-for
+
+  @Prop({type: Object}) UserViewModel!: Object;
   created() {
     let UserViewModel = [];
     let UserServerModel = [];
