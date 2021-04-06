@@ -7,14 +7,20 @@
     <div class="cell_age">Возраст</div>
     <div class="cell_avatar">Фотография</div>
   </div>
-  <div class="row" >
-    <p>123</p>
+  <!-- <div class="row" >
       <div class="cell_name" v-for="item in UserViewModel" :key="item.name">{{item.name}}</div>
       <div class="cell_date" v-for="item in UserViewModel" :key="item.data">{{item.data}}</div>
       <div class="cell_age" v-for="item in UserViewModel" :key="item.age">{{item.age}}</div>
       <div class="cell_avatar" v-for="item in UserViewModel" :key="item.avatar">
         <img :src="item.avatar" alt="">
-      </div>
+  </div> -->
+<div class="row" v-for="item in UserViewModel" :key="item">
+      <div class="cell_name" >{{item.name}}</div>
+      <div class="cell_date" >{{item.data}}</div>
+      <div class="cell_age" >{{item.age}}</div>
+      <div class="cell_avatar">
+        <img :src="item.avatar" alt="">
+  </div>
   </div>
   </div>
 </template>
@@ -37,8 +43,25 @@ import * as faker from 'faker';
   }, 
 })
 export default class Table extends Vue {
-
-  @Prop({type: Object}) UserViewModel!: Object;
+   //@Prop({type: Object}) UserViewModel!: Object;
+  data() {
+    let UserViewModel = [];
+    let UserServerModel = [];
+     for (var i = 0; i < 50; i++) {
+      let dist = {
+      name : faker.name.firstName(),
+      data : faker.date.past(),
+      age :Math.floor(Math.random() * 101),
+      avatar : faker.image.avatar()
+      };
+      UserServerModel.push(dist);
+    }
+    UserViewModel = UserServerModel;
+    this.show(UserViewModel);
+    return {
+      UserViewModel,
+    }
+  }
   created() {
     let UserViewModel = [];
     let UserServerModel = [];
@@ -53,6 +76,7 @@ export default class Table extends Vue {
     }
     UserViewModel = UserServerModel;
     this.show(UserViewModel);
+    return  UserViewModel;
   }
   show (UserViewModel : object) {
     console.log(UserViewModel);
@@ -76,7 +100,7 @@ export default class Table extends Vue {
   .cell_date,
   .cell_age,
   .cell_avatar{
-    padding: 20px 40px;
+    width: 200px;
     border: 1px #000 solid;
   }
 }
