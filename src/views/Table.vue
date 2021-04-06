@@ -1,11 +1,20 @@
 <template>
   <div class="home">
   <h1>Table</h1>
-    <h1>{{ name }}</h1>
-    <div class='element'>
-      <input v-model='name'/>
-      <!--v-model  для обновления данных в элементах ввода-->
-    </div>
+  <div class="_row">
+    <div class="cell_name">Имя</div>
+    <div class="cell_date">Дата рождения</div>
+    <div class="cell_age">Возраст</div>
+    <div class="cell_avatar">Фотография</div>
+  </div>
+  <div class="row" v-if="UserViewModel">
+      <div class="cell_name" v-for="item in UserViewModel" :key="item.name">{{item.name}}</div>
+      <div class="cell_date" v-for="item in UserViewModel" :key="item.data">{{item.data}}</div>
+      <div class="cell_age" v-for="item in UserViewModel" :key="item.age">{{item.age}}</div>
+      <div class="cell_avatar" v-for="item in UserViewModel" :key="item.avatar">
+        <img :src="item.avatar" alt="">
+      </div>
+  </div>
   </div>
 </template>
 
@@ -29,23 +38,25 @@ import * as faker from 'faker';
 export default class Table extends Vue {
   // заполнить v-for
   created() {
-  }
-  name = 'Иванов Иван Иванович';
-  @Watch('name')
-  onNameChanged() {
-    // https://stackoverflow.com/questions/45278398/how-to-use-faker-js-in-typescript
-    //https://www.npmjs.com/package/faker
-    for (var i = 0; i < 50; i++) {
-      let firstName = faker.name.firstName();
-      console.log(firstName);
-      let birthday = faker.date.past();
-      console.log(birthday);
-      let age = Math.floor(Math.random() * 101);;
-      console.log(age);
-      let avatar = faker.image.avatar();
-      console.log(avatar);
+    let UserViewModel = [];
+    let UserServerModel = [];
+     for (var i = 0; i < 50; i++) {
+      let dist = {
+      name : faker.name.firstName(),
+      data : faker.date.past(),
+      age :Math.floor(Math.random() * 101),
+      avatar : faker.image.avatar()
+      };
+      UserServerModel.push(dist);
     }
+    UserViewModel = UserServerModel;
+    this.show(UserViewModel);
   }
+  show (UserViewModel : object) {
+    console.log(UserViewModel);
+  }
+  // https://stackoverflow.com/questions/45278398/how-to-use-faker-js-in-typescript
+  //https://www.npmjs.com/package/faker
 }
 </script>
 <style lang="less">
@@ -53,6 +64,17 @@ export default class Table extends Vue {
   .element{
     display: flex;
     align-items: center;
+  }
+  ._row,
+  .row{
+    display: flex;
+  }
+  .cell_name,
+  .cell_date,
+  .cell_age,
+  .cell_avatar{
+    padding: 20px 40px;
+    border: 1px #000 solid;
   }
 }
 </style>
