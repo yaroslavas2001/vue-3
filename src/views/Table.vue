@@ -57,6 +57,7 @@ export default class Table extends Vue {
   show (UserViewModel : object) {
     console.log(UserViewModel);
   }
+  // плагинация https://www.youtube.com/watch?v=ndNWcZko64s
   // https://stackoverflow.com/questions/45278398/how-to-use-faker-js-in-typescript
   //https://www.npmjs.com/package/faker
 }
