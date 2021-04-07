@@ -2,23 +2,43 @@
   <div class="home">
   <h1>Table</h1>
     <input v-model='name'/>
-  <div class="_row">
-    <div class="cell_name">Имя</div>
-    <div class="cell_date">Дата рождения</div>
-    <div class="cell_age">Возраст</div>
-    <div class="cell_avatar">Фотография</div>
-  </div>
-   <div class="row" v-for="item in usersToDisplay" :key="item">
-      <div class="cell_name" >{{item.name}}</div>
-      <div class="cell_date" >{{item.data}}</div>
-      <div class="cell_age" >{{item.age}}</div>
-      <div class="cell_avatar">
-        <img :src="item.avatar" alt="">
+
+    <div class="2" v-if="name.length!=0">
+      <div class="_row">
+        <div class="cell_name">Имя 1</div>
+        <div class="cell_date">Дата рождения</div>
+        <div class="cell_age">Возраст</div>
+        <div class="cell_avatar">Фотография</div>
       </div>
-  </div>
- <div class="pagination">
-   <div class="page" v-for="page in totalPageCount " :key="page" @click="pageClick(page)">{{page}}</div>
- </div>
+      <div class="row" v-for="item in searchlist" :key="item">
+          <div class="cell_name" >{{item.name}}</div>
+          <div class="cell_date" >{{item.data}}</div>
+          <div class="cell_age" >{{item.age}}</div>
+          <div class="cell_avatar">
+            <img :src="item.avatar" alt="">
+          </div>
+      </div>
+    </div>
+    <div class="2" v-else>
+      <div class="_row">
+        <div class="cell_name">Имя</div>
+        <div class="cell_date">Дата рождения</div>
+        <div class="cell_age">Возраст</div>
+        <div class="cell_avatar">Фотография</div>
+      </div>
+      <div class="row" v-for="item in usersToDisplay" :key="item">
+          <div class="cell_name" >{{item.name}}</div>
+          <div class="cell_date" >{{item.data}}</div>
+          <div class="cell_age" >{{item.age}}</div>
+          <div class="cell_avatar">
+            <img :src="item.avatar" alt="">
+          </div>
+      </div>
+      <div class="pagination">
+        <div class="page" v-for="page in totalPageCount " :key="page" @click="pageClick(page)">{{page}}</div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -43,11 +63,12 @@ export default class Table extends Vue {
    //@Prop({type: Object}) UserViewModel!: Object;
   usersToDisplay: {name: string, data: Date, age: number, avatar: string}[] = [];
   allUsers: {name: string, data: Date, age: number, avatar: string}[] = [];
+  searchlist: {name: string, data: Date, age: number, avatar: string}[] = [];
   pageSize = 10;
   totalPageCount: number = 0;
   currentPage = 1;
   initData() {
-    for (var i = 0; i < 52; i++) {
+    for (var i = 0; i <30; i++) {
       let dist = {
         name : faker.name.firstName(),
         data : faker.date.past(),
@@ -75,13 +96,16 @@ export default class Table extends Vue {
   @Watch('name')
   search() {
     console.log(this.name);
-    
-    // for(var i=0; i<this.allUsers.length;i++){
-    //   if( this.allUsers[i].name.toLowerCase().includes(this.name.toLowerCase()) || String( this.allUsers[i].age).includes(this.name) || String( this.allUsers[i].data).includes(this.name) ){
-    //   } else{
-         
-    //   }
-    // }
+    // this.allUsers = this.allUsers.filter(function(item){
+    //   console.log(item.name);
+    // })
+  this.searchlist = [];
+    for(var i=0; i<this.allUsers.length;i++){
+      if( this.allUsers[i].name.toLowerCase().includes(this.name.toLowerCase()) || String( this.allUsers[i].age).includes(this.name) || String( this.allUsers[i].data).includes(this.name) ){
+        this.searchlist.push(this.allUsers[i]);
+        console.log("yes");
+      } 
+    }
     //js filter
   }
   // плагинация https://www.youtube.com/watch?v=ndNWcZko64s
