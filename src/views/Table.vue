@@ -7,7 +7,7 @@
     <div class="cell_age">Возраст</div>
     <div class="cell_avatar">Фотография</div>
   </div>
-<div class="row" v-for="item in UserViewModellist" :key="item">
+   <div class="row" v-for="item in usersToDisplay" :key="item">
       <div class="cell_name" >{{item.name}}</div>
       <div class="cell_date" >{{item.data}}</div>
       <div class="cell_age" >{{item.age}}</div>
@@ -16,7 +16,7 @@
       </div>
   </div>
  <div class="pagination">
-   <div class="page" v-for="page in pages" :key="page" @click="pageClick(page)">{{page}}</div>
+   <div class="page" v-for="page in totalPageCount " :key="page" @click="pageClick(page)">{{page}}</div>
  </div>
   </div>
 </template>
@@ -40,38 +40,37 @@ import * as faker from 'faker';
 })
 export default class Table extends Vue {
    //@Prop({type: Object}) UserViewModel!: Object;
-  
-  data() {
-    let UserViewModel = [];
-    let UserServerModel = [];
-     for (var i = 0; i < 52; i++) {
+  usersToDisplay: {name: string, data: Date, age: number, avatar: string}[] = [];
+  allUsers: {name: string, data: Date, age: number, avatar: string}[] = [];
+  pageSize = 10;
+  totalPageCount: number = 0;
+  currentPage = 1;
+  initData() {
+    for (var i = 0; i < 52; i++) {
       let dist = {
-      name : faker.name.firstName(),
-      data : faker.date.past(),
-      age :Math.floor(Math.random() * 101),
-      avatar : faker.image.avatar()
-      };
-      UserServerModel.push(dist);
+        name : faker.name.firstName(),
+        data : faker.date.past(),
+        age :Math.floor(Math.random() * 101),
+        avatar : faker.image.avatar()
+        };
+      this.allUsers.push(dist);
     }
-    UserViewModel = UserServerModel;
-    
-    let pageNum = 1;
-    let usersPerpage = 10;
-    let pages = Math.ceil(UserViewModel.length/10);
-    let from = (pageNum - 1)*usersPerpage;
-    let to = from + usersPerpage;
-    let UserViewModellist =UserViewModel.slice(from,to);
-    return {
-      UserViewModellist,
-      UserViewModel,
-      pages,
-    }
+    this.totalPageCount = Math.ceil(this.allUsers.length/this.pageSize);
   }
-  pageClick (){
-    console.log(7);
+  created() {
+    this.initData();
+    this.filterDisplayUsers();
+  }
+  filterDisplayUsers() {
+    let from = (this.currentPage - 1)*this.pageSize;
+    let to = from + this.pageSize;
+    this.usersToDisplay = this.allUsers.slice(from,to);
+  }
+  pageClick (page : Number){
+    this.currentPage =Number(page) ;
+    this.filterDisplayUsers();
   }
 
-  
   // плагинация https://www.youtube.com/watch?v=ndNWcZko64s
   // https://stackoverflow.com/questions/45278398/how-to-use-faker-js-in-typescript
   //https://www.npmjs.com/package/faker
