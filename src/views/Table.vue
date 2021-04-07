@@ -1,28 +1,9 @@
 <template>
   <div class="home">
   <h1>Table</h1>
-    <input v-model='name'/>
-
-    <div class="2" v-if="name.length!=0">
-      <div class="_row">
-        <div class="cell_name">Имя 1</div>
-        <div class="cell_date">Дата рождения</div>
-        <div class="cell_age">Возраст</div>
-        <div class="cell_avatar">Фотография</div>
-      </div>
-      <div class="row" v-for="item in searchlist" :key="item">
-          <div class="cell_name" >{{item.name}}</div>
-          <div class="cell_date" >{{item.data}}</div>
-          <div class="cell_age" >{{item.age}}</div>
-          <div class="cell_avatar">
-            <img :src="item.avatar" alt="">
-          </div>
-      </div>
-       <div class="pagination">
-        <div class="page" v-for="page in totalPageCount " :key="page" @click="pageClick(page)">{{page}}</div>
-      </div>
-    </div>
-    <div class="2" v-else>
+    <input v-model='search'/>
+    
+    <div class="2">
       <div class="_row">
         <div class="cell_name">Имя</div>
         <div class="cell_date">Дата рождения</div>
@@ -31,14 +12,14 @@
       </div>
       <div class="row" v-for="item in usersToDisplay" :key="item">
           <div class="cell_name" >{{item.name}}</div>
-          <div class="cell_date" >{{item.data}}</div>
+          <div class="cell_date" >{{formatDate(item.data)}}</div>
           <div class="cell_age" >{{item.age}}</div>
           <div class="cell_avatar">
             <img :src="item.avatar" alt="">
           </div>
       </div>
       <div class="pagination">
-        <div class="page" v-for="page in totalPageCount " :key="page" @click="pageClick(page)">{{page}}</div>
+        <div class="page" v-for="page in totalPageCount " :class="{active: page == currentPage}" :key="page" @click="pageClick(page)">{{page}}</div>
       </div>
     </div>
 
@@ -56,7 +37,14 @@
 import { Options, Prop, Vue, Watch } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import * as faker from 'faker';
+import * as moment from 'moment';
 
+interface IUser {
+  name: string;
+   data: Date;
+    age: number;
+     avatar: string;
+}
 @Options({
   components: {
     HelloWorld
@@ -64,11 +52,20 @@ import * as faker from 'faker';
 })
 export default class Table extends Vue {
    //@Prop({type: Object}) UserViewModel!: Object;
-  usersToDisplay: {name: string, data: Date, age: number, avatar: string}[] = [];
-  allUsers: {name: string, data: Date, age: number, avatar: string}[] = [];
-  searchlist: {name: string, data: Date, age: number, avatar: string}[] = [];
+  get usersToDisplay(): IUser[] {
+    let from = (this.currentPage - 1)*this.pageSize;
+    let to = from + this.pageSize;
+    return this.filteredUsers.slice(from,to);
+  }
+  allUsers: IUser[] = [];
+  filteredUsers: IUser[] = [];
   pageSize = 10;
-  totalPageCount: number = 0;
+  get totalPageCount(): number {
+    return Math.ceil(this.filteredUsers.length/this.pageSize);
+  }
+  formatDate(date: Date) {
+    return moment(date).format('DD.MM.YYYY hh:mm');
+  }
   currentPage = 1;
   initData() {
     for (var i = 0; i <30; i++) {
@@ -80,44 +77,49 @@ export default class Table extends Vue {
         };
       this.allUsers.push(dist);
     }
-    this.totalPageCount = Math.ceil(this.allUsers.length/this.pageSize);
+    this.filteredUsers = this.allUsers.slice();
   }
   created() {
     this.initData();
-    this.filterDisplayUsers();
+    // this.filterDisplayUsers();
   }
-  filterDisplayUsers() {
-     
-    let from = (this.currentPage - 1)*this.pageSize;
-    let to = from + this.pageSize;
-    if(this.name.length==0){
-       this.usersToDisplay = this.allUsers.slice(from,to);
-    }else{
-      console.log(from);
-      console.log(to);
-      this.usersToDisplay= this.searchlist.slice(from,to);
-    }
+  // filterDisplayUsers() {     
+  //   let from = (this.currentPage - 1)*this.pageSize;
+  //   let to = from + this.pageSize;
+  //   if(this.search.length==0){
+  //      this.usersToDisplay = this.allUsers.slice(from,to);
+  //   }else{
+  //     console.log(from);
+  //     console.log(to);
+  //     this.usersToDisplay= this.filteredUsers.slice(from,to);
+  //   }
 
-  }
+  // }
   pageClick (page : Number){
+    console.log(this.currentPage);
     this.currentPage =Number(page);
-    this.filterDisplayUsers();
+    // this.filterDisplayUsers();
   }
-  name = '';
-  @Watch('name')
-  search() {
-    console.log(this.name);
+  search = '';
+  @Watch('search') // есть такая хрень как debounce (в библиотеке lodash)
+  onSearchChanged() {
+    console.log(this.search);
     // this.allUsers = this.allUsers.filter(function(item){
     //   console.log(item.name);
     // })
-  this.searchlist = [];
-    for(var i=0; i<this.allUsers.length;i++){
-      if( this.allUsers[i].name.toLowerCase().includes(this.name.toLowerCase()) || String( this.allUsers[i].age).includes(this.name) || String( this.allUsers[i].data).includes(this.name) ){
-        this.searchlist.push(this.allUsers[i]);
-        console.log("yes");
-      } 
-    }
-    this.totalPageCount = Math.ceil(this.searchlist.length/this.pageSize);
+    const s = this.search.toLowerCase();
+    this.filteredUsers = this.allUsers.filter(x=>x.name.toLowerCase().includes(s)
+      || x.age.toString().includes(s) || this.formatDate(x.data).includes(s));
+      if (this.currentPage > this.totalPageCount) {
+        this.currentPage = this.totalPageCount;
+      }
+  // this.filteredUsers = [];
+    // for(var i=0; i<this.allUsers.length;i++){
+    //   if( this.allUsers[i].name.toLowerCase().includes(this.search.toLowerCase()) || String( this.allUsers[i].age).includes(this.search) || String( this.allUsers[i].data).includes(this.search) ){
+    //     this.filteredUsers.push(this.allUsers[i]);
+    //     console.log("yes");
+    //   } 
+    // }
     //js filter
   }
   // плагинация https://www.youtube.com/watch?v=ndNWcZko64s
@@ -149,6 +151,10 @@ export default class Table extends Vue {
     padding: 10px;
     border: 1px solid #000;
     margin: 1px;
+    cursor: pointer;
+    &.active {
+      background-color: purple;
+    }
   }
 }
 </style>
