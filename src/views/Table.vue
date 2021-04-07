@@ -18,6 +18,9 @@
             <img :src="item.avatar" alt="">
           </div>
       </div>
+       <div class="pagination">
+        <div class="page" v-for="page in totalPageCount " :key="page" @click="pageClick(page)">{{page}}</div>
+      </div>
     </div>
     <div class="2" v-else>
       <div class="_row">
@@ -84,12 +87,20 @@ export default class Table extends Vue {
     this.filterDisplayUsers();
   }
   filterDisplayUsers() {
+     
     let from = (this.currentPage - 1)*this.pageSize;
     let to = from + this.pageSize;
-    this.usersToDisplay = this.allUsers.slice(from,to);
+    if(this.name.length==0){
+       this.usersToDisplay = this.allUsers.slice(from,to);
+    }else{
+      console.log(from);
+      console.log(to);
+      this.usersToDisplay= this.searchlist.slice(from,to);
+    }
+
   }
   pageClick (page : Number){
-    this.currentPage =Number(page) ;
+    this.currentPage =Number(page);
     this.filterDisplayUsers();
   }
   name = '';
@@ -106,6 +117,7 @@ export default class Table extends Vue {
         console.log("yes");
       } 
     }
+    this.totalPageCount = Math.ceil(this.searchlist.length/this.pageSize);
     //js filter
   }
   // плагинация https://www.youtube.com/watch?v=ndNWcZko64s
