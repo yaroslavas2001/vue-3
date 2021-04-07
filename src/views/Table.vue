@@ -1,6 +1,7 @@
 <template>
   <div class="home">
   <h1>Table</h1>
+    <input v-model='name'/>
   <div class="_row">
     <div class="cell_name">Имя</div>
     <div class="cell_date">Дата рождения</div>
@@ -70,7 +71,19 @@ export default class Table extends Vue {
     this.currentPage =Number(page) ;
     this.filterDisplayUsers();
   }
-
+  name = '';
+  @Watch('name')
+  search() {
+    console.log(this.name);
+    
+    // for(var i=0; i<this.allUsers.length;i++){
+    //   if( this.allUsers[i].name.toLowerCase().includes(this.name.toLowerCase()) || String( this.allUsers[i].age).includes(this.name) || String( this.allUsers[i].data).includes(this.name) ){
+    //   } else{
+         
+    //   }
+    // }
+    //js filter
+  }
   // плагинация https://www.youtube.com/watch?v=ndNWcZko64s
   // https://stackoverflow.com/questions/45278398/how-to-use-faker-js-in-typescript
   //https://www.npmjs.com/package/faker
