@@ -1,8 +1,8 @@
 <template>
   <div class="home">
   <h1>Table</h1>
-    <input v-model='search'/>
-    
+    <!-- <input v-model='search'/>  передать в компонент-->
+   <Filter :users="allUsers" @someEvent="onSomeEventCaptured"/>
     <div class="2">
       <div class="_row">
         <div class="cell_name">Имя</div>
@@ -18,9 +18,10 @@
             <img :src="item.avatar" alt="">
           </div>
       </div>
-      <div class="pagination">
+      <!-- <div class="pagination">
         <div class="page" v-for="page in totalPageCount " :class="{active: page == currentPage}" :key="page" @click="pageClick(page)">{{page}}</div>
-      </div>
+      </div> -->
+      <Pagination />
     </div>
 
   </div>
@@ -36,23 +37,29 @@
 // пример таблицы https://mdbootstrap.com/docs/b4/jquery/tables/pagination/
 import { Options, Prop, Vue, Watch } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Filter from '@/components/Filter.vue';
+import Pagination from '@/components/Pagination.vue';
+
 import * as faker from 'faker';
 import * as moment from 'moment';
 
 interface IUser {
   name: string;
-   data: Date;
-    age: number;
-     avatar: string;
+  data: Date;
+  age: number;
+  avatar: string;
 }
 @Options({
+  name: 'table',
   components: {
-    HelloWorld
+    HelloWorld,
+    Filter,
+    Pagination,
   }, 
 })
 export default class Table extends Vue {
-   //@Prop({type: Object}) UserViewModel!: Object;
-  get usersToDisplay(): IUser[] {
+
+    get usersToDisplay(): IUser[] {
     let from = (this.currentPage - 1)*this.pageSize;
     let to = from + this.pageSize;
     return this.filteredUsers.slice(from,to);
@@ -65,6 +72,12 @@ export default class Table extends Vue {
   }
   formatDate(date: Date) {
     return moment(date).format('DD.MM.YYYY hh:mm');
+  }
+
+  // ловля события
+  onSomeEventCaptured(data: string) {
+    console.log('Словили событие: ', data);
+    
   }
   currentPage = 1;
   initData() {
@@ -81,50 +94,24 @@ export default class Table extends Vue {
   }
   created() {
     this.initData();
-    // this.filterDisplayUsers();
+  console.log(Filter);
   }
-  // filterDisplayUsers() {     
-  //   let from = (this.currentPage - 1)*this.pageSize;
-  //   let to = from + this.pageSize;
-  //   if(this.search.length==0){
-  //      this.usersToDisplay = this.allUsers.slice(from,to);
-  //   }else{
-  //     console.log(from);
-  //     console.log(to);
-  //     this.usersToDisplay= this.filteredUsers.slice(from,to);
-  //   }
-
-  // }
   pageClick (page : Number){
     console.log(this.currentPage);
     this.currentPage =Number(page);
-    // this.filterDisplayUsers();
   }
-  search = '';
-  @Watch('search') // есть такая хрень как debounce (в библиотеке lodash)
-  onSearchChanged() {
-    console.log(this.search);
-    // this.allUsers = this.allUsers.filter(function(item){
-    //   console.log(item.name);
-    // })
-    const s = this.search.toLowerCase();
-    this.filteredUsers = this.allUsers.filter(x=>x.name.toLowerCase().includes(s)
-      || x.age.toString().includes(s) || this.formatDate(x.data).includes(s));
-      if (this.currentPage > this.totalPageCount) {
-        this.currentPage = this.totalPageCount;
-      }
-  // this.filteredUsers = [];
-    // for(var i=0; i<this.allUsers.length;i++){
-    //   if( this.allUsers[i].name.toLowerCase().includes(this.search.toLowerCase()) || String( this.allUsers[i].age).includes(this.search) || String( this.allUsers[i].data).includes(this.search) ){
-    //     this.filteredUsers.push(this.allUsers[i]);
-    //     console.log("yes");
-    //   } 
-    // }
-    //js filter
-  }
-  // плагинация https://www.youtube.com/watch?v=ndNWcZko64s
-  // https://stackoverflow.com/questions/45278398/how-to-use-faker-js-in-typescript
-  //https://www.npmjs.com/package/faker
+
+  // search = '';
+  // @Watch('search') // есть такая хрень как debounce (в библиотеке lodash)
+  // onSearchChanged() {
+  //   console.log(this.search);
+  //   const s = this.search.toLowerCase();
+  //   this.filteredUsers = this.allUsers.filter(x=>x.name.toLowerCase().includes(s)
+  //     || x.age.toString().includes(s) || this.formatDate(x.data).includes(s));
+  //     if (this.currentPage > this.totalPageCount) {
+  //       this.currentPage = this.totalPageCount;
+  //     }
+  // }
 }
 </script>
 <style lang="less">
