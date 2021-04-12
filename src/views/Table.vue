@@ -1,29 +1,11 @@
 <template>
   <div class="home">
   <h1>Table</h1>
-    <!-- <input v-model='search'/>  передать в компонент-->
-   <Filter :users="allUsers" @someEvent="onSomeEventCaptured"/>
-    <div class="2">
-      <div class="_row">
-        <div class="cell_name">Имя</div>
-        <div class="cell_date">Дата рождения</div>
-        <div class="cell_age">Возраст</div>
-        <div class="cell_avatar">Фотография</div>
-      </div>
-      <div class="row" v-for="item in usersToDisplay" :key="item">
-          <div class="cell_name" >{{item.name}}</div>
-          <div class="cell_date" >{{formatDate(item.data)}}</div>
-          <div class="cell_age" >{{item.age}}</div>
-          <div class="cell_avatar">
-            <img :src="item.avatar" alt="">
-          </div>
-      </div>
-      <!-- <div class="pagination">
-        <div class="page" v-for="page in totalPageCount " :class="{active: page == currentPage}" :key="page" @click="pageClick(page)">{{page}}</div>
-      </div> -->
-      <Pagination />
-    </div>
+   <Filter :allUsers="allUsers" @someEvent="onSomeEventCaptured"/>
 
+   <Grid :allUsers="allUsers" :currentPage="currentPage" :pageSize="pageSize"/>
+
+    <Pagination :currentPage="currentPage" :pageSize="pageSize"/>
   </div>
 </template>
 
@@ -39,9 +21,10 @@ import { Options, Prop, Vue, Watch } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import Filter from '@/components/Filter.vue';
 import Pagination from '@/components/Pagination.vue';
+import Grid from '@/components/Grid.vue';
 
 import * as faker from 'faker';
-import * as moment from 'moment';
+// import * as moment from 'moment';
 
 interface IUser {
   name: string;
@@ -55,32 +38,19 @@ interface IUser {
     HelloWorld,
     Filter,
     Pagination,
+    Grid,
   }, 
 })
 export default class Table extends Vue {
 
-    get usersToDisplay(): IUser[] {
-    let from = (this.currentPage - 1)*this.pageSize;
-    let to = from + this.pageSize;
-    return this.filteredUsers.slice(from,to);
-  }
-  allUsers: IUser[] = [];
-  filteredUsers: IUser[] = [];
-  pageSize = 10;
-  get totalPageCount(): number {
-    return Math.ceil(this.filteredUsers.length/this.pageSize);
-  }
-  formatDate(date: Date) {
-    return moment(date).format('DD.MM.YYYY hh:mm');
-  }
-
-  // ловля события
-  onSomeEventCaptured(data: string) {
-    console.log('Словили событие: ', data);
-    
-  }
-  currentPage = 1;
-  initData() {
+created() {
+  this.initData();
+}
+allUsers: IUser[] = [];
+filteredUsers: IUser[] = [];
+currentPage = 1;
+pageSize = 10;
+initData() {
     for (var i = 0; i <30; i++) {
       let dist = {
         name : faker.name.firstName(),
@@ -91,27 +61,47 @@ export default class Table extends Vue {
       this.allUsers.push(dist);
     }
     this.filteredUsers = this.allUsers.slice();
-  }
-  created() {
-    this.initData();
-  console.log(Filter);
-  }
-  pageClick (page : Number){
-    console.log(this.currentPage);
-    this.currentPage =Number(page);
-  }
+}
 
-  // search = '';
-  // @Watch('search') // есть такая хрень как debounce (в библиотеке lodash)
-  // onSearchChanged() {
-  //   console.log(this.search);
-  //   const s = this.search.toLowerCase();
-  //   this.filteredUsers = this.allUsers.filter(x=>x.name.toLowerCase().includes(s)
-  //     || x.age.toString().includes(s) || this.formatDate(x.data).includes(s));
-  //     if (this.currentPage > this.totalPageCount) {
-  //       this.currentPage = this.totalPageCount;
-  //     }
-  // }
+
+
+
+
+
+
+// get usersToDisplay(): IUser[] {
+//   let from = (this.currentPage - 1)*this.pageSize;
+//   let to = from + this.pageSize;
+//   return this.filteredUsers.slice(from,to);
+// }
+
+// get totalPageCount(): number {
+//   return Math.ceil(this.filteredUsers.length/this.pageSize);
+// }  
+// получает номер страницы на которую нажали
+// pageClick (page : Number){
+//     this.currentPage =Number(page);
+// }
+//поиск
+//  formatDate(date: Date) {
+//     return moment(date).format('DD.MM.YYYY hh:mm');
+//   }
+//   search = '';
+//   @Watch('search') // есть такая хрень как debounce (в библиотеке lodash)
+//   onSearchChanged() {
+//     const s = this.search.toLowerCase();
+//     this.filteredUsers = this.allUsers.filter(x=>x.name.toLowerCase().includes(s)
+//       || x.age.toString().includes(s) || this.formatDate(x.data).includes(s));
+//       if (this.currentPage > this.totalPageCount) {
+//         this.currentPage = this.totalPageCount;
+//       }
+//   }
+
+
+    // ловля события
+  onSomeEventCaptured(data: string) {
+    console.log('Словили событие: ', data);
+  }
 }
 </script>
 <style lang="less">
