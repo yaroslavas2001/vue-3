@@ -9,7 +9,7 @@
       :currentPage="currentPage"
       :pageSize="pageSize"
       :totalCount="totalPageCount"
-      @someEvent="pageClick"
+      @pageClick="pageClick"
     />
   </div>
 </template>
@@ -22,7 +22,10 @@
 // компонент - постраничка - который формирует элементы переключения страниц
 // отображать ты будешь список UserViewModel[]
 // пример таблицы https://mdbootstrap.com/docs/b4/jquery/tables/pagination/
+
+
 //добавить поиск до и после
+//дообавить расширение списка как в примере
 import { Options, Prop, Vue, Watch } from "vue-property-decorator";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 import Filter from "@/components/Filter.vue";
@@ -81,13 +84,12 @@ export default class Table extends Vue {
   pageClick(page: Number) {
     this.currentPage = Number(page);
   }
-  //поиск
   formatDate(date: Date) {
     return moment(date).format("DD.MM.YYYY hh:mm");
   }
   // ловля события
-  onSomeEventCaptured(data: string) {
-    const s = data.toLowerCase();
+  onSomeEventCaptured(data: {search: string,  dateFrom?: Date, dateTo?: Date, ageFrom?: number, ageTo?: number,}) {
+    const s = data.search.toLowerCase();
     this.filteredUsers = this.allUsers.filter(
       (x) =>
         x.name.toLowerCase().includes(s) ||
@@ -97,6 +99,7 @@ export default class Table extends Vue {
     if (this.currentPage > this.totalPageCount) {
       this.currentPage = this.totalPageCount;
     }
+    console.log(data.ageFrom);
     // console.log('Словили событие: ', data);
   }
 }

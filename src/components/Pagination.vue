@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Options, Prop, Vue, Watch } from "vue-property-decorator";
+import { Options, Prop, Vue} from "vue-property-decorator";
 
 @Options({
   name: "pagination",
@@ -32,7 +32,7 @@ export default class Pagination extends Vue {
 
   pageClick(page: Number) {
     // this.currentPage =Number(page);
-    this.$emit("someEvent", page);
+    this.$emit("pageClick", page);
   }
   get totalPageCount(): number {
     return this.totalCount;

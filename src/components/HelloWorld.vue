@@ -127,34 +127,3 @@ onFilterChanged(data: {search: string, ageFrom?: number, ageTo?: number, dateFro
   }
 }
 </script>
-<style lang="less">
-.home {
-  .element{
-    display: flex;
-    align-items: center;
-  }
-  ._row,
-  .row{
-    display: flex;
-  }
-  .cell_name,
-  .cell_date,
-  .cell_age,
-  .cell_avatar{
-    width: 200px;
-    border: 1px #000 solid;
-  }
-  .pagination{
-    display: flex;
-  }
-  .page{
-    padding: 10px;
-    border: 1px solid #000;
-    margin: 1px;
-    cursor: pointer;
-    &.active {
-      background-color: purple;
-    }
-  }
-}
-</style>
