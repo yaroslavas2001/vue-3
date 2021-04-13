@@ -1,24 +1,22 @@
 <template>
-      <div class="_row">
-        <div class="cell_name">Имя</div>
-        <div class="cell_date">Дата рождения</div>
-        <div class="cell_age">Возраст</div>
-        <div class="cell_avatar">Фотография</div>
-      </div>
-      <div class="row" v-for="item in usersToDisplay" :key="item"  >
-          <div class="cell_name" >{{item.name}}</div>
-          <div class="cell_date" >{{formatDate(item.data)}}</div>
-          <div class="cell_age" >{{item.age}}</div>
-          <div class="cell_avatar">
-            <img :src="item.avatar" alt="">
-          </div>
-      </div> 
-      
+  <div class="_row">
+    <div class="cell_name">Имя</div>
+    <div class="cell_date">Дата рождения</div>
+    <div class="cell_age">Возраст</div>
+    <div class="cell_avatar">Фотография</div>
+  </div>
+  <div class="row" v-for="item in Display" :key="item">
+    <div class="cell_name">{{ item.name }}</div>
+    <div class="cell_date">{{ formatDate(item.data) }}</div>
+    <div class="cell_age">{{ item.age }}</div>
+    <div class="cell_avatar">
+      <img :src="item.avatar" alt="" />
+    </div>
+  </div>
 </template>
 <script lang="ts">
-
-import { Options, Prop, Vue, Watch } from 'vue-property-decorator';
-  
+import { Options, Prop, Vue } from "vue-property-decorator";
+import * as moment from "moment";
 interface IUser {
   name: string;
   data: Date;
@@ -26,20 +24,46 @@ interface IUser {
   avatar: string;
 }
 @Options({
-    name: 'grid'
-}) 
+  name: "grid",
+})
 export default class Grid extends Vue {
-    @Prop({type: Array}) allUsers!: any [];
-    @Prop({type:  Number}) currentPage!: number;
-    @Prop({type: Number}) pageSize!: number;
-
-  get usersToDisplay(): IUser[] {
-    let from = (this.currentPage - 1)*this.pageSize;
-    let to = from + this.pageSize;
-    console.log(this.allUsers.slice(from,to));
-    return (this.allUsers.slice(from,to));
-    //  return this.filteredUsers.slice(from,to);
+  @Prop({ type: Array }) usersToDisplay!: IUser[];
+  get Display(): IUser[] {
+    return this.usersToDisplay;
   }
-
+  formatDate(date: Date) {
+    return moment(date).format("DD.MM.YYYY hh:mm");
+  }
 }
 </script>
+<style lang="less">
+.home {
+  .element {
+    display: flex;
+    align-items: center;
+  }
+  ._row,
+  .row {
+    display: flex;
+  }
+  .cell_name,
+  .cell_date,
+  .cell_age,
+  .cell_avatar {
+    width: 200px;
+    border: 1px #000 solid;
+  }
+  .pagination {
+    display: flex;
+  }
+  .page {
+    padding: 10px;
+    border: 1px solid #000;
+    margin: 1px;
+    cursor: pointer;
+    &.active {
+      background-color: purple;
+    }
+  }
+}
+</style>

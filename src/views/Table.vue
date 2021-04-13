@@ -1,11 +1,16 @@
 <template>
   <div class="home">
-  <h1>Table</h1>
-   <Filter :allUsers="allUsers" @someEvent="onSomeEventCaptured"/>
+    <h1>Table</h1>
+    <Filter @someEvent="onSomeEventCaptured" />
 
-   <Grid :allUsers="allUsers" :currentPage="currentPage" :pageSize="pageSize"/>
+    <Grid :usersToDisplay="usersToDisplay" />
 
-    <Pagination :currentPage="currentPage" :pageSize="pageSize"/>
+    <Pagination
+      :currentPage="currentPage"
+      :pageSize="pageSize"
+      :totalCount="totalPageCount"
+      @someEvent="pageClick"
+    />
   </div>
 </template>
 
@@ -17,14 +22,15 @@
 // компонент - постраничка - который формирует элементы переключения страниц
 // отображать ты будешь список UserViewModel[]
 // пример таблицы https://mdbootstrap.com/docs/b4/jquery/tables/pagination/
-import { Options, Prop, Vue, Watch } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
-import Filter from '@/components/Filter.vue';
-import Pagination from '@/components/Pagination.vue';
-import Grid from '@/components/Grid.vue';
+//добавить поиск до и после
+import { Options, Prop, Vue, Watch } from "vue-property-decorator";
+import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import Filter from "@/components/Filter.vue";
+import Pagination from "@/components/Pagination.vue";
+import Grid from "@/components/Grid.vue";
 
-import * as faker from 'faker';
-// import * as moment from 'moment';
+import * as faker from "faker";
+import * as moment from "moment";
 
 interface IUser {
   name: string;
@@ -33,98 +39,89 @@ interface IUser {
   avatar: string;
 }
 @Options({
-  name: 'table',
+  name: "table",
   components: {
     HelloWorld,
     Filter,
     Pagination,
     Grid,
-  }, 
+  },
 })
 export default class Table extends Vue {
-
-created() {
-  this.initData();
-}
-allUsers: IUser[] = [];
-filteredUsers: IUser[] = [];
-currentPage = 1;
-pageSize = 10;
-initData() {
-    for (var i = 0; i <30; i++) {
+  created() {
+    this.initData();
+  }
+  allUsers: IUser[] = [];
+  filteredUsers: IUser[] = [];
+  currentPage = 1;
+  pageSize = 10;
+  initData() {
+    for (var i = 0; i < 30; i++) {
       let dist = {
-        name : faker.name.firstName(),
-        data : faker.date.past(),
-        age :Math.floor(Math.random() * 101),
-        avatar : faker.image.avatar()
-        };
+        name: faker.name.firstName(),
+        data: faker.date.past(),
+        age: Math.floor(Math.random() * 101),
+        avatar: faker.image.avatar(),
+      };
       this.allUsers.push(dist);
     }
     this.filteredUsers = this.allUsers.slice();
-}
+  }
 
+  get usersToDisplay(): IUser[] {
+    let from = (this.currentPage - 1) * this.pageSize;
+    let to = from + this.pageSize;
+    return this.filteredUsers.slice(from, to);
+  }
 
-
-
-
-
-
-// get usersToDisplay(): IUser[] {
-//   let from = (this.currentPage - 1)*this.pageSize;
-//   let to = from + this.pageSize;
-//   return this.filteredUsers.slice(from,to);
-// }
-
-// get totalPageCount(): number {
-//   return Math.ceil(this.filteredUsers.length/this.pageSize);
-// }  
-// получает номер страницы на которую нажали
-// pageClick (page : Number){
-//     this.currentPage =Number(page);
-// }
-//поиск
-//  formatDate(date: Date) {
-//     return moment(date).format('DD.MM.YYYY hh:mm');
-//   }
-//   search = '';
-//   @Watch('search') // есть такая хрень как debounce (в библиотеке lodash)
-//   onSearchChanged() {
-//     const s = this.search.toLowerCase();
-//     this.filteredUsers = this.allUsers.filter(x=>x.name.toLowerCase().includes(s)
-//       || x.age.toString().includes(s) || this.formatDate(x.data).includes(s));
-//       if (this.currentPage > this.totalPageCount) {
-//         this.currentPage = this.totalPageCount;
-//       }
-//   }
-
-
-    // ловля события
+  get totalPageCount(): number {
+    return Math.ceil(this.filteredUsers.length / this.pageSize);
+  }
+  // получает номер страницы на которую нажали
+  pageClick(page: Number) {
+    this.currentPage = Number(page);
+  }
+  //поиск
+  formatDate(date: Date) {
+    return moment(date).format("DD.MM.YYYY hh:mm");
+  }
+  // ловля события
   onSomeEventCaptured(data: string) {
-    console.log('Словили событие: ', data);
+    const s = data.toLowerCase();
+    this.filteredUsers = this.allUsers.filter(
+      (x) =>
+        x.name.toLowerCase().includes(s) ||
+        x.age.toString().includes(s) ||
+        this.formatDate(x.data).includes(s)
+    );
+    if (this.currentPage > this.totalPageCount) {
+      this.currentPage = this.totalPageCount;
+    }
+    // console.log('Словили событие: ', data);
   }
 }
 </script>
 <style lang="less">
 .home {
-  .element{
+  .element {
     display: flex;
     align-items: center;
   }
   ._row,
-  .row{
+  .row {
     display: flex;
   }
   .cell_name,
   .cell_date,
   .cell_age,
-  .cell_avatar{
+  .cell_avatar {
     width: 200px;
     border: 1px #000 solid;
   }
-  .pagination{
+  .pagination {
     display: flex;
   }
-  .page{
+  .page {
     padding: 10px;
     border: 1px solid #000;
     margin: 1px;
