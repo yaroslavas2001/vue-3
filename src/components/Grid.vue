@@ -32,7 +32,7 @@ export default class Grid extends Vue {
     return this.usersToDisplay;
   }
   formatDate(date: Date) {
-    return moment(date).format("DD.MM.YYYY hh:mm");
+    return moment(date).format("DD.MM.YYYY");
   }
 }
 </script>

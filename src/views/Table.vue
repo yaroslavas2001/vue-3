@@ -89,22 +89,18 @@ export default class TableComponent extends Vue {
     this.currentPage = Number(page);
   }
   formatDate(date: Date) {
-    return moment(date).format("DD.MM.YYYY hh:mm");
+    return moment(date).format("DD.MM.YYYY");
   }
   // ловля события
   onFilterChanged(data: ISearch) {
-    console.log('onFilterChanged: ', data.search);
-
+    //console.log(typeof(data.fromDate))
+    //console.log(typeof()));
    const s = data.search.toLowerCase();
-    this.filteredUsers = this.allUsers.filter(
-      (x) =>
-        x.name.toLowerCase().includes(s) ||
-        x.age.toString().includes(s) ||
-        this.formatDate(x.data).includes(s)
-    );
+    this.filteredUsers = this.allUsers.filter((x) => x.name.toLowerCase().includes(s) || x.age.toString().includes(s) ||this.formatDate(x.data).includes(s));
     if (this.currentPage > this.totalPageCount) {
       this.currentPage = this.totalPageCount;
     }
+
   }
 }
 </script>

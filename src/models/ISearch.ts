@@ -1,7 +1,7 @@
 export default interface ISearch {
     search: string;
-    fromDate: String;
-    toDate: String;
-    fromAge: string;
-    toAge: string;
+    fromDate: Date;
+    toDate: Date;
+    fromAge: number;
+    toAge: number;
   }

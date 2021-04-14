@@ -5,9 +5,9 @@
   <p>To date</p>
   <input type="date" v-model="toDate" />
   <p>From age</p>
-  <input type="number" v-model="fromAge" />
+  <input type="number" v-model.number="fromAge" />
   <p>To age</p>
-  <input type="number" v-model="toAge" />
+  <input type="number" v-model.number="toAge" />
   <button ref="btnEl" @click="searchFromTo()">Найти</button>
 </template>
 <script lang="ts">
@@ -21,20 +21,20 @@ import ISearch from "../models/ISearch";
 export default class Filter extends Vue {
   // @Ref('btnEl') btnEl!: HTMLButtonElement;
   search = "";
-  fromDate = "";
-  toDate = "";
-  fromAge = "";
-  toAge = "";
+  fromDate = new Date();//"00-00-0000");
+  toDate = new Date();//"12-12-9999");
+  fromAge = 0;
+  toAge = 100;
   // searchpull: ISearch[] = [];
   searchFromTo() {
     let filterData: ISearch = {
       search: this.search,
-      fromDate: this.fromDate,
-      toDate: this.toDate,
+      fromDate: new Date(this.fromDate),
+      toDate: new Date(this.toDate),
       fromAge: this.fromAge,
       toAge: this.toAge
     };
-    // this.searchpull.push(dist);
+    console.log(this.fromDate);
     this.$emit("change", filterData);
   }
 }
