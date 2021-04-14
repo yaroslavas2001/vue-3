@@ -1,0 +1,1 @@
+.home .element{display:flex;align-items:center}.home ._row,.home .row{display:flex}.home .cell_age,.home .cell_avatar,.home .cell_date,.home .cell_name{width:200px;border:1px solid #000}.home .pagination{display:flex}.home .page{padding:10px;border:1px solid #000;margin:1px;cursor:pointer}.home .page.active{background-color:purple}

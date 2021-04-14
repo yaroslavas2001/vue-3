@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1>Table</h1>
-    <Filter @someEvent="onSomeEventCaptured" />
+    <Filter @change="onFilterChanged" />
 
     <Grid :usersToDisplay="usersToDisplay" />
 
@@ -26,14 +26,17 @@
 
 //добавить поиск до и после
 //дообавить расширение списка как в примере
+// слот в таблице все импуты, в фильтре кнопки поиска и отчистки фильтра
 import { Options, Prop, Vue, Watch } from "vue-property-decorator";
 import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 import Filter from "@/components/Filter.vue";
 import Pagination from "@/components/Pagination.vue";
 import Grid from "@/components/Grid.vue";
+import ISearch from "../models/ISearch";
 
 import * as faker from "faker";
 import * as moment from "moment";
+import { date } from "faker";
 
 interface IUser {
   name: string;
@@ -41,6 +44,7 @@ interface IUser {
   age: number;
   avatar: string;
 }
+
 @Options({
   name: "table",
   components: {
@@ -50,7 +54,7 @@ interface IUser {
     Grid,
   },
 })
-export default class Table extends Vue {
+export default class TableComponent extends Vue {
   created() {
     this.initData();
   }
@@ -88,8 +92,10 @@ export default class Table extends Vue {
     return moment(date).format("DD.MM.YYYY hh:mm");
   }
   // ловля события
-  onSomeEventCaptured(data: {search: string,  dateFrom?: Date, dateTo?: Date, ageFrom?: number, ageTo?: number,}) {
-    const s = data.search.toLowerCase();
+  onFilterChanged(data: ISearch) {
+    console.log('onFilterChanged: ', data.search);
+
+   const s = data.search.toLowerCase();
     this.filteredUsers = this.allUsers.filter(
       (x) =>
         x.name.toLowerCase().includes(s) ||
@@ -99,8 +105,6 @@ export default class Table extends Vue {
     if (this.currentPage > this.totalPageCount) {
       this.currentPage = this.totalPageCount;
     }
-    console.log(data.ageFrom);
-    // console.log('Словили событие: ', data);
   }
 }
 </script>

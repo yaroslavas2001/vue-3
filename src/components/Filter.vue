@@ -1,34 +1,41 @@
 <template>
   <input v-model="search" />
   <p>From date</p>
-  <input type="date" id="from" />
+  <input type="date" v-model="fromDate" />
   <p>To date</p>
-  <input type="date" id="to" value="2018-07-22" />
+  <input type="date" v-model="toDate" />
   <p>From age</p>
-  <input id="number" type="number" value="42" />
+  <input type="number" v-model="fromAge" />
   <p>To age</p>
-  <input id="number" type="number" value="42" />
-  <button @click="searchFromTo()">Найти</button>
+  <input type="number" v-model="toAge" />
+  <button ref="btnEl" @click="searchFromTo()">Найти</button>
 </template>
 <script lang="ts">
-import { Options, Prop, Vue, Watch } from "vue-property-decorator";
+import { Options, Prop, Vue, Ref } from "vue-property-decorator";
+import ISearch from "../models/ISearch";
+
 @Options({
   name: "filter",
+  emits: ["change"]
 })
 export default class Filter extends Vue {
-  // search = "";
-  // @Watch("search") // есть такая хрень как debounce (в библиотеке lodash)
-  // onSearchChanged() {
-  //   this.$emit("someEvent", this.search);
-  //   //передать в родитель
-  // }
+  // @Ref('btnEl') btnEl!: HTMLButtonElement;
+  search = "";
+  fromDate = "";
+  toDate = "";
+  fromAge = "";
+  toAge = "";
+  // searchpull: ISearch[] = [];
   searchFromTo() {
-    let string = document.getElementsByTagName("input")[0].value;
-    let fromDate = document.getElementsByTagName("input")[1].value;
-    let toDate = document.getElementsByTagName("input")[2].value;
-    let fromAge = document.getElementsByTagName("input")[3].value;
-    let toAge = document.getElementsByTagName("input")[4].value;
-    this.$emit("someEvent", string, fromDate, toDate,fromAge,toAge);
+    let filterData: ISearch = {
+      search: this.search,
+      fromDate: this.fromDate,
+      toDate: this.toDate,
+      fromAge: this.fromAge,
+      toAge: this.toAge
+    };
+    // this.searchpull.push(dist);
+    this.$emit("change", filterData);
   }
 }
 </script>
